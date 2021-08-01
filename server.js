@@ -1,30 +1,33 @@
-var http = require("http");
-var fs = require('fs');
-//const format = require("node.date-time");
-//const winston = require('winston');
-var port = 8080;
-var serverUrl = "0.0.0.0";
+var express = require('express')
+var fs = require('fs')
+var morgan = require('morgan')
+var path = require('path')
+
+var app = express()
+
 var counter = 0;
 
-var server = http.createServer(function(req, res) {
+// log all requests to access.log
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms', {
+  stream: fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
+}))
 
-  counter++;
-  console.log("Request: " + req.url + " (" + counter + ")");
+app.get('/', function (req, res) {
+    counter++;
+    console.log("Request: " + req.url + " (" + counter + ")");
 
-  if(req.url == "/sample.html") {
+    if(req.url == "/sample.html") {
 
-    fs.readFile("sample.html", function(err, text){
-      res.setHeader("Content-Type", "text/html");
-      res.end(text)
-    });
-    return;
-  }
+      fs.readFile("sample.html", function(err, text){
+        res.setHeader("Content-Type", "text/html");
+        res.end(text)
+      });
+      return;
+    }
 
-  res.setHeader("Content-Type", "text/html");
-  res.end("<p>Test task for Chumachenko Volodymyr 07/30/2021.    Request counter: " + counter + ".</p>");
- // fs.appendFile('counter.log',+counter+'\n');
-});
+    res.setHeader("Content-Type", "text/html");
+    res.end("<p>Test task for Chumachenko Volodymyr 07/30/2021.    Request counter: " + counter + ".</p>");
+   fs.appendFile('counter.log',+counter+'\n', () => {});
+})
 
-console.log("Starting web server at " + serverUrl + ":" + port);
-server.listen(port, serverUrl);
-
+app.listen(parseInt(process.env.PORT) || 8080)
