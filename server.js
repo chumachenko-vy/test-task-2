@@ -26,7 +26,7 @@ app.get('/', function (req, res) {
     }
 
     res.setHeader("Content-Type", "text/html");
-    res.end("<p>Test task for Chumachenko Volodymyr 07/30/2021.    Request counter: " + counter + ".</p>");
+    res.end("<p>Test task for Chumachenko Volodymyr 01/08/2021.    Request counter: " + counter + ".</p>");
    fs.appendFile('counter.log',+counter+'\n', () => {});
 })
 
